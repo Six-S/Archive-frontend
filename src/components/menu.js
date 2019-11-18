@@ -1,52 +1,100 @@
 import React from 'react';
+import Upload from './uploadMenu';
+import Download from './downloadMenu';
 
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Switch from '@material-ui/core/Switch';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 
 class Menu extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            file: false,
-            directory: false,
-            system: false
+            selected: false,
+            typeSelected: 'None'
         }
     }
 
-    handleChange(type, event){
-        this.setState({
-            ...this.state,
-            type: event.target.checked
-        })
+    handleClick(e){
+        this.state = {
+            selected: false,
+            typeSelected: 'None'
+        }
+    }
+
+    renderDetails(){
+        switch(this.state.typeSelected){
+            case 'upload':
+                return <Upload
+                    handleBack={() => this.handleClick()}
+                />
+            case 'download':
+                return(
+                    <Download />
+                )
+            case 'structure':
+                console.warn('Not Implemented...');
+                this.props.popNotification('error', 'Structure is not implemented.')
+                this.setState({ selected: false })
+                break;
+            case 'None':
+                break;
+            default:
+                this.props.popNotification('error', 'An unexpected error occured.')
+        }
     }
 
     render(){
+
+        console.log(this.state)
+
         return (
-            <FormControl component="fieldset">
-                <FormLabel component="legend">Upload Type: </FormLabel>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<Switch checked={this.state.file} onChange={this.handleChange('file')} value="file" />}
-                            label="Single File"
-                        />
-                        <FormControlLabel
-                            control={<Switch checked={this.state.directory} onChange={this.handleChange('directory')} value="directory" />}
-                            label="directory"
-                        />
-                        <FormControlLabel
-                            control={
-                            <Switch checked={this.state.system} onChange={this.handleChange('system')} value="system" />
-                            }
-                            label="System"
-                        />
-                    </FormGroup>
-                <FormHelperText>Be careful</FormHelperText>
-          </FormControl>
+            <div>
+                {!this.state.selected ?
+                    <div>
+                        <div className='menuButton'>
+                            <Button
+                                variant="contained"
+                                onClick={(e) => this.setState({
+                                    selected: true,
+                                    typeSelected: e.target.id
+                                })}
+                                id="upload"
+                            >
+                                Upload
+                            </Button>
+                        </div>
+                        <div className='menuButton'>
+                            <Button
+                                variant="contained"
+                                onClick={(e) => this.setState({
+                                    selected: true,
+                                    typeSelected: e.target.id
+                                })}
+                                id="download"
+                            >
+                                Download
+                            </Button>
+                        </div>
+                        <div className='menuButton'>
+                            <Button
+                                variant="contained"
+                                onClick={(e) => this.setState({
+                                    selected: true,
+                                    typeSelected: e.target.id
+                                })}
+                                id="structure"
+                            >
+                                Structure
+                            </Button>
+                        </div>
+                    </div>
+                :
+                    <div>
+                        {this.renderDetails()}
+                    </div>
+                }
+            </div>
         )
     }
 }
