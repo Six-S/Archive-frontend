@@ -16,17 +16,17 @@ class Menu extends React.Component{
     }
 
     handleClick(e){
-        this.state = {
+        this.setState({
             selected: false,
             typeSelected: 'None'
-        }
+        });
     }
 
     renderDetails(){
         switch(this.state.typeSelected){
             case 'upload':
                 return <Upload
-                    handleBack={() => this.handleClick()}
+                    handleBack={this.handleClick.bind(this)}
                 />
             case 'download':
                 return(

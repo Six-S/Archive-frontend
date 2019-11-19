@@ -4,7 +4,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
@@ -16,7 +16,10 @@ class UploadMenu extends React.Component{
                 file: false,
                 directory: false,
                 system: false
-            }
+            },
+            allowUpload: false,
+            allowSubmit: false,
+            files: []
         }
     }
 
@@ -30,7 +33,8 @@ class UploadMenu extends React.Component{
                         file: true,
                         directory: false,
                         system: false
-                    }
+                    },
+                    allowUpload: true,
                 });
                 break;
             case 'directory':
@@ -39,7 +43,8 @@ class UploadMenu extends React.Component{
                             file: false,
                             directory: true,
                             system: false
-                        }
+                        },
+                        allowUpload: true,
                     });
                     break;
             case 'system':
@@ -48,26 +53,52 @@ class UploadMenu extends React.Component{
                             file: false,
                             directory: false,
                             system: true
-                        }
+                        },
+                        allowUpload: true,
                     });
                     break;
         }
     }
 
+    handleBackClick(event){
+
+        console.log('we are in handle back click', event)
+
+        this.setState({
+            toggles:{
+                file: false,
+                directory: false,
+                system: false
+            },
+            allowUpload: false,
+            allowSubmit: false,
+            files: []
+        });
+
+        this.props.handleBack()
+    }
+
+    handleFileUpload(event){
+        console.log('we made it into file upload!!', event.target.files);
+        let uploadedFiles = event.target.files
+
+        //This aint working, I don't know why I thought it would. It's late.
+        uploadedFiles.forEach(file => {
+            this.setState({
+                files: [...this.state.files, file]
+            });
+        });
+
+        //new FileReader() !!!!!!!!!!1
+
+        console.log('WOwowow our state!', this.state)
+    }
+
     // <FormHelperText>Be careful</FormHelperText>
 
     render(){
-
-        console.log(this.props)
-
         return (
             <div>
-                <div 
-                    className='backArrow'
-                    onClick={this.props.handleBack()}
-                    >
-                    <KeyboardBackspaceIcon onClick={this.props.handleBack()}/>
-                </div>
                 <FormControl component="fieldset">
                     <FormLabel component="legend">Upload Type: </FormLabel>
                         <FormGroup>
@@ -80,13 +111,51 @@ class UploadMenu extends React.Component{
                                 label="Directory"
                             />
                             <FormControlLabel
-                                control={
-                                <Switch checked={this.state.toggles.system} onChange={() => this.handleChange('system')} value="system" />
-                                }
+                                control={<Switch checked={this.state.toggles.system} onChange={() => this.handleChange('system')} value="system" />}
                                 label="System"
                             />
                         </FormGroup>
                 </FormControl>
+                <div className='uploadFile'>
+                    <input
+                        accept="image/*"
+                        className='fileInput'
+                        id="contained-button-file"
+                        multiple
+                        type="file"
+                        onChange={(event) => this.handleFileUpload(event)}
+                    />
+                    <label htmlFor="contained-button-file">
+                        <Button 
+                            variant="contained"
+                            component="span"
+                            disabled={!this.state.allowUpload}
+                        >
+                            Upload
+                        </Button>
+                    </label>
+                </div>
+                <div className='buttonGroup'>
+                    <div className='uploadButton'>
+                        <Button
+                            variant="contained"
+                            onClick={event => this.handleBackClick(event)}
+                            id="back"
+                        >
+                            Back
+                        </Button>
+                    </div>
+                    <div className='uploadButton'>
+                        <Button
+                            variant="contained"
+                            onClick={(e) => console.log('Submit was clicked.')}
+                            disabled={!this.state.allowSubmit}
+                            id="submit"
+                        >
+                            Submit
+                        </Button>
+                    </div>
+                </div>
             </div>
         )
     }

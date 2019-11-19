@@ -8,6 +8,22 @@
     margin-top: 20px;
 }
 
+.buttonGroup{
+    text-align: center;
+}
+
+.fileInput{
+    display: none;
+}
+
+.uploadButton{
+    width: 100px;
+    height: 40px;
+    margin-top: 20px;
+    /* float: left; */
+    display: inline-block;
+}
+
 .backArrow{
     font-size: x-large;
     top: 10px;
