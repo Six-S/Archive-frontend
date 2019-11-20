@@ -79,17 +79,22 @@ class UploadMenu extends React.Component{
     }
 
     handleFileUpload(event){
-        console.log('we made it into file upload!!', event.target.files);
-        let uploadedFiles = event.target.files
+        let uploadedFiles = []
 
         //This aint working, I don't know why I thought it would. It's late.
-        uploadedFiles.forEach(file => {
-            this.setState({
-                files: [...this.state.files, file]
+        if(this.state.toggles.file){
+            uploadedFiles.push(event.target.files[0])
+        } else {
+            Object.values(event.target.files).forEach(file => {
+                console.log('is this working?', file);
+                uploadedFiles.push(file);
             });
-        });
+        }
 
-        //new FileReader() !!!!!!!!!!1
+        this.setState({
+            files: uploadedFiles,
+            allowSubmit: true
+        });
 
         console.log('WOwowow our state!', this.state)
     }
@@ -118,7 +123,7 @@ class UploadMenu extends React.Component{
                 </FormControl>
                 <div className='uploadFile'>
                     <input
-                        accept="image/*"
+                        accept="*"
                         className='fileInput'
                         id="contained-button-file"
                         multiple
